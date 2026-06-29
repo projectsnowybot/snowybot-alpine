@@ -192,7 +192,7 @@ def initialize_bot_process(keep_old_data=False):
         print("🚀 Fresh start. Calculating base initial variables.")
         origiun = ui_balance
         fox = ui_balance
-        bear = f8(origiun / 320)
+        bear = f8(origiun / 144000)
         kitty = bear
         chance = 49.5
         mookie = origiun
@@ -240,19 +240,12 @@ def runCatBot():
         matworking = math.floor(mymat)
         base_kool = (matworking * kool)
         heartbeat = True
-        if (fox > (mile + (kool * 4))):
+        if (fox > (mile + (kool * fart))):
             kitty = bear
             fart = 1
             lastLeap = float(base_kool)
             mile = float(base_kool)
-            print("[System] Upper handbrake triggered.")
-
-        if (fox <= (kitty*2)):
-            kitty = bear
-            fart = 1
-            lastLeap = float(base_kool)
-            mile = float(base_kool)
-            print("[System] lower handbrake triggered.")
+            print("[System] Upper handbrake triggered")
 
         if ((fox > (base_kool + sevens)) and (fox < (base_kool + eights)) and (fox > lastLeap)):   
             kitty = kitty * 2
