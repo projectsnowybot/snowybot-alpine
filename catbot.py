@@ -213,7 +213,7 @@ LAST_FOX_CHANGE_TIMESTAMP = time.time()
 # BOT LOGIC
 # ---------------------------
 def runCatBot():
-    global fox, kitty, heartbeat, lastLeap, mookie, scratchPad, litterbox, origiun
+    global fox, kitty, heartbeat, lastLeap, mookie, scratchPad, litterbox, origiun, mile
 
     # Fetch fresh balance from the application layout
     becance = driver.find_element(By.ID, "pct_balance").get_attribute("value")
