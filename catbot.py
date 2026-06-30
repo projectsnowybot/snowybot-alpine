@@ -213,7 +213,7 @@ LAST_FOX_CHANGE_TIMESTAMP = time.time()
 # BOT LOGIC
 # ---------------------------
 def runCatBot():
-    global fox, kitty, heartbeat, lastLeap, mookie, scratchPad, litterbox, origiun, mile
+    global fox, kitty, heartbeat, lastLeap, mookie, scratchPad, litterbox, origiun, mile, fart
 
     # Fetch fresh balance from the application layout
     becance = driver.find_element(By.ID, "pct_balance").get_attribute("value")
@@ -246,7 +246,7 @@ def runCatBot():
             heartbeat = False
             sys.exit()
 
-        if (fox >= (origiun * 0.24)):
+        if (fox >= (origiun * 1.24)):
             print("🔄 Refreshing page, target for compound achived but preserving reseting progress variables...")
             if os.path.exists(STATE_FILE):
                 os.remove(STATE_FILE) 
