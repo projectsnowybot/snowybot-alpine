@@ -163,12 +163,11 @@ def initialize_bot_process(keep_old_data=False):
         origiun = saved_state.get("origiun", ui_balance) 
         fox = saved_state["fox"]
         kitty = saved_state["kitty"]
-        chance = saved_state["chance"]
         mookie = saved_state["mookie"]
         bear = saved_state["bear"]
-        kool = saved_state["kool"]
-        sevens = saved_state["sevens"]
-        eights = saved_state["eights"]
+        kool = (bear*10)
+        sevens = (bear*6.9)
+        eights = (bear*7.9)
         fart = saved_state["fart"]
         scratchPad = saved_state["scratchPad"]
         litterbox = saved_state["litterbox"] 
@@ -180,9 +179,6 @@ def initialize_bot_process(keep_old_data=False):
         if ((viagra == round((scratchPad + kitty), 8)) or (viagra == round((litterbox - kitty), 8))):
             scratchPad = viagra
             litterbox = viagra
-            
-        mymat = saved_state["mymat"]
-        matworking = saved_state["matworking"]
         mile = saved_state["mile"]
         lastLeap = saved_state["lastLeap"]
         heartbeat = True
@@ -190,22 +186,20 @@ def initialize_bot_process(keep_old_data=False):
     # Scenario C: Clean startup initialization
     else:
         print("🚀 Fresh start. Calculating base initial variables.")
-        origiun = ui_balance
-        fox = ui_balance
-        bear = f8(origiun / 144000)
+        origiun = float(ui_balance)
+        fox = origiun
+        yobbo = (origiun/144000)
+        bear = round(yobbo, 8)
         kitty = bear
-        chance = 49.5
-        mookie = origiun
-        kool = bear * 10
-        sevens = bear * 6.9
-        eights = bear * 7.9
         fart = 1
-        scratchPad = fox
-        litterbox = fox
-        mymat = f8(origiun / kool)
-        matworking = math.floor(mymat)
-        mile = (matworking * kool)
-        lastLeap = (matworking * kool)
+        mookie = origiun
+        kool = (bear*10)
+        sevens = (bear*6.9)
+        eights = (bear*7.9)
+        scratchPad = float(fox)
+        litterbox = float(fox)
+        lastLeap = float(fox-bear)
+        mile = ((math.floor(origiun/kool))*kool)
         heartbeat = True
 
 # Execute basic process instantiation
@@ -219,54 +213,64 @@ LAST_FOX_CHANGE_TIMESTAMP = time.time()
 # BOT LOGIC
 # ---------------------------
 def runCatBot():
-    global fox, kitty, lastLeap, matworking, mymat, mile, blue, mookie, scratchPad, litterbox, origiun, fart, heartbeat
+    global fox, kitty, heartbeat, lastLeap, mookie, scratchPad, litterbox, origiun
 
     # Fetch fresh balance from the application layout
-    bocance = driver.find_element(By.ID, "pct_balance").get_attribute("value")
+    becance = driver.find_element(By.ID, "pct_balance").get_attribute("value")
 
-    # Convert to float
-    viagra = float(bocance)
-    
-    # Run the dynamic check to see if balance changed on site due to a completed bet
-    if ((viagra == round((scratchPad + kitty), 8)) or (viagra == round((litterbox - kitty), 8))):
-        scratchPad = viagra
-        litterbox = viagra
-
-    mookie = viagra
+    mookie = float(becance)
     
     if ((mookie == scratchPad) or (mookie == litterbox)):
         fox = float(mookie)
-        mymat = (fox / kool)
-        matworking = math.floor(mymat)
-        base_kool = (matworking * kool)
         heartbeat = True
-        if (fox > (mile + (kool * fart))):
+        if (fox >= (mile+(kool*fart))):
+            lastLeap = float(fox-bear)
             kitty = bear
             fart = 1
-            lastLeap = float(base_kool)
-            mile = float(base_kool)
+            mile = ((math.floor((float(fox))/kool))*kool)
             print("[System] Upper handbrake triggered")
 
-        if ((fox > (base_kool + sevens)) and (fox < (base_kool + eights)) and (fox > lastLeap)):   
-            kitty = kitty * 2
-            lastLeap = float(fox) 
+        if ((fox>(((math.floor(fox/kool))*kool)+sevens)) and (fox<(((math.floor(fox/kool))*kool)+eights)) and (fox>lastLeap)):
+            lastLeap = float(fox)   
+            kitty = kitty * 2 
 
-        if ((fox > (base_kool + sevens)) and (fox < (base_kool + eights)) and (fox < lastLeap)):   
-            kitty = kitty * 2
-            fart = 0
+        if ((fox>(((math.floor(fox/kool))*kool)+sevens)) and (fox<(((math.floor(fox/kool))*kool)+eights)) and (fox<lastLeap)):
             lastLeap = float(fox)
+            fart = 0   
+            kitty = kitty * 2 
 
-        if ((fox>=(round((lastLeap+(kitty*10)), 8))) or (fox<=(round((lastLeap-(kitty*10)), 8)))):
+        if ((fox>=(lastLeap+(kitty*10))) or (fox<=(lastLeap-(kitty*10)))):
             print("over clicking Stopping bot.")
             if os.path.exists(STATE_FILE):
                 os.remove(STATE_FILE) 
             heartbeat = False
+            sys.exit()
 
-        if (fox >= (origiun * 24)):
-            print("🎉 Profit target reached! Stopping bot.")
+        if (fox >= (origiun * 0.24)):
+            print("🔄 Refreshing page, target for compound achived but preserving reseting progress variables...")
             if os.path.exists(STATE_FILE):
                 os.remove(STATE_FILE) 
             heartbeat = False
+            try:
+                driver.refresh()
+                # Resolve fresh Cloudflare IPs and apply them to firewall rules dynamically
+                refresh_network_whitelist()
+
+                # Trigger a browser refresh flow while locking current progression constants
+                initialize_bot_process(keep_old_data=False)
+                
+                # Re-zero out verification values to prevent dynamic looping loops
+                LAST_FOX_VALUE = fox
+                LAST_FOX_CHANGE_TIMESTAMP = time.time() 
+                print("✅ Reset complete. Resuming loop...")
+            except Exception as e:
+                print(f"⚠️ Error during initialization: {e}. Retrying next cycle...")
+                time.sleep(5) 
+
+        if (fox >= 144000):
+            print("🔄 winner winner chicken dinner...") 
+            heartbeat = False
+            sys.exit()
 
         if (heartbeat):
             netTreats = f8(fox - origiun)
@@ -277,7 +281,7 @@ def runCatBot():
         
             # UI updates via element interaction
             driver.find_element(By.ID, "pct_chance").clear()
-            driver.find_element(By.ID, "pct_chance").send_keys(f"{chance:.8f}")
+            driver.find_element(By.ID, "pct_chance").send_keys(49.5)
 
             driver.find_element(By.ID, "pct_bet").clear()
             driver.find_element(By.ID, "pct_bet").send_keys(f"{kitty:.8f}")
@@ -285,11 +289,8 @@ def runCatBot():
             driver.find_element(By.ID, "a_lo").click()
 
             current_state = {
-                "origiun": origiun, "fox": fox, "kitty": kitty, "chance": chance, "mookie": mookie,
-                "bear": bear, "kool": kool, "sevens": sevens, "eights": eights,
-                "fart": fart, "scratchPad": scratchPad, "litterbox": litterbox,
-                "mymat": mymat, "matworking": matworking, "mile": mile,
-                "lastLeap": lastLeap
+                "origiun": origiun, "fox": fox, "kitty": kitty, "fart": fart, "mile": mile, "mookie": mookie,
+                "bear": bear, "scratchPad": scratchPad, "litterbox": litterbox, "lastLeap": lastLeap
             }
             save_state(current_state)
 
@@ -314,6 +315,7 @@ try:
             print("🔄 Refreshing page, but preserving your progress variables...")
             
             try:
+                driver.refresh()
                 # Resolve fresh Cloudflare IPs and apply them to firewall rules dynamically
                 refresh_network_whitelist()
 
