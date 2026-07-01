@@ -2,8 +2,8 @@
 
 # warning this kills all loaded docker containers
 
-# run with devaun linux and docker as user snowy
+# run with linux and docker as user snowy
 
 put files in /home/snowy/
 
-then run ./deploy.sh
+then run sudo ./deploy.sh
