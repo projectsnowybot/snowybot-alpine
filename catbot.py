@@ -73,28 +73,6 @@ driver = webdriver.Firefox(service=service, options=options)
 def f8(x):
     return float(f"{x:.8f}")
 
-def refresh_network_whitelist():
-    """Dynamically resolves new Cloudflare IPs and injects them into nftables and /etc/hosts."""
-    print("🔄 [Network Sync] Resolving latest Cloudflare edge IPs...")
-    try:
-        # Resolve fresh live IPs from DNS inside the container
-        new_jd_ip = socket.gethostbyname("just-dice.com")
-        new_cf_ip = socket.gethostbyname("cloudflareinsights.com")
-        
-        print(f"🎯 New Just-Dice IP: {new_jd_ip}")
-        print(f"🎯 New Cloudflare Insights IP: {new_cf_ip}")
-
-        # 1. Update /etc/hosts so Selenium targets the right addresses
-        hosts_cmd = f"echo '{new_jd_ip} just-dice.com\n{new_cf_ip} cloudflareinsights.com' > /etc/hosts"
-        subprocess.run(["sudo", "sh", "-c", hosts_cmd], check=True)
-
-        # 2. Flush old elements and swap in the new live IPs inside nftables
-        subprocess.run(["sudo", "nft", "flush", "set", "inet", "filter", "allowed_ips"], check=True)
-        subprocess.run(["sudo", "nft", "add", "element", "inet", "filter", "allowed_ips", f"{{ {new_jd_ip}, {new_cf_ip} }}"], check=True)
-        print("✅ [Network Sync] Firewalls and host maps successfully synchronized!")
-    except Exception as e:
-        print(f"⚠️ [Network Sync Failed] Could not update dynamic rules: {e}")
-
 # ---------------------------
 # PROCESS INITIALIZATION / REFRESH FUNCTION
 # ---------------------------
@@ -198,7 +176,7 @@ def initialize_bot_process(keep_old_data=False):
         eights = (bear*7.9)
         scratchPad = float(fox)
         litterbox = float(fox)
-        lastLeap = float(fox-bear)
+        lastLeap = ((math.floor(origiun/kool))*kool)
         mile = ((math.floor(origiun/kool))*kool)
         heartbeat = True
 
@@ -224,10 +202,10 @@ def runCatBot():
         fox = float(mookie)
         heartbeat = True
         if (fox >= (mile+(kool*fart))):
-            lastLeap = float(fox-bear)
+            lastLeap = float((math.floor(fox/kool))*kool)
             kitty = bear
             fart = 1
-            mile = ((math.floor((float(fox))/kool))*kool)
+            mile = float((math.floor(fox/kool))*kool)
             print("[System] Upper handbrake triggered")
 
         if ((fox>(((math.floor(fox/kool))*kool)+sevens)) and (fox<(((math.floor(fox/kool))*kool)+eights)) and (fox>lastLeap)):
@@ -239,7 +217,13 @@ def runCatBot():
             fart = 0   
             kitty = kitty * 2 
 
-        if ((fox>=(lastLeap+(kitty*10))) or (fox<=(lastLeap-(kitty*10)))):
+        if (((fox>=(lastLeap+(kitty*10))) and (kitty==bear)) or ((fox<=(lastLeap-(kitty*4))) and (kitty==bear))):
+            print("over clicking Stopping bot.")
+            if os.path.exists(STATE_FILE):
+                os.remove(STATE_FILE) 
+            heartbeat = False
+            sys.exit()
+        if (((fox>=(lastLeap+(kitty*6))) and (kitty>bear)) or ((fox<=(lastLeap-(kitty*6))) and (kitty>bear))):
             print("over clicking Stopping bot.")
             if os.path.exists(STATE_FILE):
                 os.remove(STATE_FILE) 
@@ -253,8 +237,6 @@ def runCatBot():
             heartbeat = False
             try:
                 driver.refresh()
-                # Resolve fresh Cloudflare IPs and apply them to firewall rules dynamically
-                refresh_network_whitelist()
 
                 # Trigger a browser refresh flow while locking current progression constants
                 initialize_bot_process(keep_old_data=False)
@@ -316,8 +298,6 @@ try:
             
             try:
                 driver.refresh()
-                # Resolve fresh Cloudflare IPs and apply them to firewall rules dynamically
-                refresh_network_whitelist()
 
                 # Trigger a browser refresh flow while locking current progression constants
                 initialize_bot_process(keep_old_data=True)
