@@ -79,7 +79,7 @@ def f8(x):
 def initialize_bot_process(keep_old_data=False):
     """Handles browser loading, logging in, and setting up variables (either fresh or keeping old progress)."""
     global origiun, fox, bear, kitty, chance, mookie, kool, sevens, eights, fart
-    global scratchPad, litterbox, mymat, matworking, mile, lastLeap, blue
+    global scratchPad, litterbox, mile, lastLeap
 
     print("\n🌐 Page loading, please wait...")
     driver.get("https://just-dice.com")
@@ -223,6 +223,7 @@ def runCatBot():
                 os.remove(STATE_FILE) 
             heartbeat = False
             sys.exit()
+
         if (((fox>=(lastLeap+(kitty*6))) and (kitty>bear)) or ((fox<=(lastLeap-(kitty*6))) and (kitty>bear))):
             print("over clicking Stopping bot.")
             if os.path.exists(STATE_FILE):
@@ -236,8 +237,6 @@ def runCatBot():
                 os.remove(STATE_FILE) 
             heartbeat = False
             try:
-                driver.refresh()
-
                 # Trigger a browser refresh flow while locking current progression constants
                 initialize_bot_process(keep_old_data=False)
                 
@@ -297,8 +296,6 @@ try:
             print("🔄 Refreshing page, but preserving your progress variables...")
             
             try:
-                driver.refresh()
-
                 # Trigger a browser refresh flow while locking current progression constants
                 initialize_bot_process(keep_old_data=True)
                 
