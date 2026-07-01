@@ -6,4 +6,4 @@
 
 put files in /home/snowy/
 
-then run ./deploy_catbot.sh
+then run ./deploy.sh
